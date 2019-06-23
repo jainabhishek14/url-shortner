@@ -3,28 +3,39 @@ import React, {Component} from "react";
 import "./short-table.scss";
 
 const rowFields = {
-    url: "Original Url",
-    uniqueUrl: "Short Url",
-    dateAdded: "Created Date",
-    numClicks: "Number of Clicks"
+    url: {
+        name: "Original Url",
+        formattor: v => <a href={`${v}`} target="_blank">{`${v}`}</a>
+    },
+    uniqueUrl: {
+        name: "Short Url",
+        formattor: v => <a href={`${v}`} target="_blank">{`${v}`}</a>
+    },
+    dateAdded: {
+        name: "Created Date",
+        formattor: v => v.toString()
+    },
+    numClicks: {
+        name: "Clicks",
+        formattor: v => typeof v === "Number" ? Number.parseInt(v, 10) : 0
+    },
 }
 
 const RowHeader = () => (<thead>
     <tr>
-        {Object.keys(rowFields).map(field => <td key={`head-${field}`}>{rowFields[field]}</td>)}
+        {Object.keys(rowFields).map(field => <td key={`head-${field}`}>{rowFields[field].name}</td>)}
     </tr>
 </thead>);
 
 const renderRow = (row, index) => (
     <tr key={`row-${index}`}>
-        {Object.keys(rowFields).map(field => <td key={`${index}-${field}`}>{row[field]}</td>)}
+        {Object.keys(rowFields).map(field => <td key={`${index}-${field}`}>{rowFields[field].formattor(row[field])}</td>)}
     </tr>
 );
 
 class ShortUrlTable extends Component{
     constructor(props){
         super(props);
-        console.log(props.urls);
     }
 
     render(){
@@ -33,7 +44,7 @@ class ShortUrlTable extends Component{
                 <table>
                     <RowHeader />
                     <tbody>
-                        {this.props.urls.map(renderRow)}
+                        {this.props.urls.sort((a,b) => b.dateAdded - a.dateAdded).map(renderRow)}
                     </tbody>
                 </table>
             </div>

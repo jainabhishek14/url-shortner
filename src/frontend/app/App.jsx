@@ -30,10 +30,9 @@ class App extends Component {
     }
 
     componentDidMount(){
-        // fetchUrls()
-        this.setState(state => ({shortUrls :state.shortUrls.concat(fetchUrls())}))
-            // .then(response => this.setState(state => (state.shortUrls.push(response.data))))
-            // .catch(err => console.error(err));
+        fetchUrls()
+            .then(response => this.setState(state => ({shortUrls: state.shortUrls.concat(response.data)})))
+            .catch(err => console.error(err));
     }
 
     render() {

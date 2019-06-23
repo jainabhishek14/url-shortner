@@ -19,6 +19,7 @@ const short = async (req, res) => {
 const list = (req, res) => {
     UrlModel.find({isActive: true}, 'url uniqueUrl dateAdded', (err, docs) => {
         if(err){
+            console.error("err", err);
             res.status(500).json(err);
         }
         res.status(200).json(docs.map(doc => ({...doc._doc, uniqueUrl: `${req.protocol}://${req.hostname}/${doc._doc.uniqueUrl}`})));
@@ -44,6 +45,7 @@ const get = (req, res) => {
                 });
                 res.redirect(302, doc.url);
             } catch (err) {
+                console.error("err", err);
                 res.status(500).json(err);
             }
         });
@@ -59,6 +61,7 @@ const getStats = (req, res) => {
     if(shortid.isValid(req.params.url)){
         UrlModel.findOne({uniqueUrl: req.params.url}, (err, doc) => {
             if(err){
+                console.error("err", err);
                 res.status(500).json(err);
             }
             res.status(200).json(doc);
@@ -71,7 +74,7 @@ const getStats = (req, res) => {
     return res;
 }
 
-module.exports ={ 
+module.exports = { 
     short,
     get,
     getStats,

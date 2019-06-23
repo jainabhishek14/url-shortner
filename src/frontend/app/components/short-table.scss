@@ -5,11 +5,20 @@
     margin-left: 25%;
     margin-right: 25%;
     text-align: center;
-    width: 50%
+    width: 50%;
 }
 
 table tbody {
     background: #ffffff;
+}
+
+table a {
+    text-decoration: none;
+    color: #000000;
+}
+
+table a:hover {
+    color: #6b0f1a;
 }
 
 table thead {
