@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
+const Url = require("./app/models/Url");
+
 const port = process.env.port || 6666;
 const databaseConnectionString = "mongodb://localhost:27017/url-shortner";
 // mongoose instance connection url connections

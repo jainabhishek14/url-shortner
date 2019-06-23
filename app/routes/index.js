@@ -1,5 +1,5 @@
-const shortner 	= require("./shortner_routes");
+const urlRoutes = require("./urlRoutes");
 
-module.exports = function(app, db) {
-    shortner(app, db);
+module.exports = function(app) {
+    urlRoutes(app);
 };
