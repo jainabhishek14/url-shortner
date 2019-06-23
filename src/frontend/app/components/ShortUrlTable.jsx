@@ -17,7 +17,7 @@ const rowFields = {
     },
     numClicks: {
         name: "Clicks",
-        formattor: v => Number.parseInt(v, 10)
+        formattor: v => Number.parseInt(v, 10) || 0
     },
     stats: {
         name: "",
