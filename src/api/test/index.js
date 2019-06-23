@@ -499,10 +499,29 @@ describe("When user clicks on shorten link", () => {
         });
     });
 
+
     /**
-     * Test /GET invalid shortid
+     * Test /GET invalid url
      */
-    describe("/GET invalid shortid", () => {
+    describe("/GET invalid url www.abhi", () => {
+        it("it should throw an error; Invalid URL", (done) => {
+            chai.request(server)
+                .get("/www.abhi")
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.a("string");
+                    res.body.message.should.be.eql("Invalid URL");
+                    done();
+                });
+        });
+    });
+
+    /**
+     * Test /GET valid url but invalid shortid
+     */
+    describe("/GET valid url but invalid shortid", () => {
         it("it should throw an error; Invalid URL", (done) => {
             chai.request(server)
                 .get("/12345")
@@ -553,5 +572,179 @@ describe("When user clicks on shorten link", () => {
             });
         });
     });
+});
 
+describe("/stats endpoint", () => {
+    // beforeEach((done) => { //Before each test we empty the database
+    //     Url.deleteMany({}, (err) => {
+    //         done();
+    //     });
+    // });
+
+    /**
+     * Test /POST list Route
+     */
+    describe("/POST", () => {
+        it("it should throw an error; Endpoint not found.", (done) => {
+            chai.request(server)
+                .post("/stats")
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.a("string");
+                    res.body.message.should.be.eql("Endpoint not found.");
+                    done();
+                });
+        });
+    });
+
+    /**
+     * Test /PUT Route
+     */
+    describe("/PUT", () => {
+        it("it should throw an error; Endpoint not found.", (done) => {
+            chai.request(server)
+                .put("/stats")
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.a("string");
+                    res.body.message.should.be.eql("Endpoint not found.");
+                    done();
+                });
+        });
+    });
+
+    /**
+     * Test /DELETE Route
+     */
+    describe("/DELETE", () => {
+        it("it should throw an error; Endpoint not found.", (done) => {
+            chai.request(server)
+                .delete("/stats")
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.a("string");
+                    res.body.message.should.be.eql("Endpoint not found.");
+                    done();
+                });
+        });
+    });
+
+
+    /**
+     * Test /GET invalid url
+     */
+    describe("/GET invalid url www.abhi/stats", () => {
+        it("it should throw an error; Invalid URL", (done) => {
+            chai.request(server)
+                .get("/www.abhi/stats")
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.a("string");
+                    res.body.message.should.be.eql("Invalid URL");
+                    done();
+                });
+        });
+    });
+
+    /**
+     * Test /GET valid url but invalid shortid
+     */
+    describe("/GET valid url but invalid shortid", () => {
+        it("it should throw an error; Invalid URL", (done) => {
+            chai.request(server)
+                .get("/12345/stats")
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.a("string");
+                    res.body.message.should.be.eql("Invalid URL");
+                    done();
+                });
+        });
+    });
+
+    /**
+     * Test /GET valid shortid but non-existent in db
+     */
+    describe("/GET valid shortid but non-existent in db", () => {
+        it("it should throw an error; Invalid URL", (done) => {
+            chai.request(server)
+                .get(`/${shortid.generate()}/stats`).redirects(0)
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.a("string");
+                    res.body.message.should.be.eql("Invalid URL");
+                    done();
+                });
+        });
+    });
+
+    /**
+     * Test /GET Route 
+     */
+    describe("/GET valid url with valid existent shortid but visitors none", () => {
+        it("it should give all details of that url", (done) => {
+            let url = new Url({
+                url: "http://google.com"
+            });
+            url.save((err, doc) => {
+                chai.request(server)
+                    .get(`/${doc.uniqueUrl}/stats`)
+                    .end((err, res) => {
+                        res.should.be.json;
+                        res.should.have.status(200);
+                        res.body.should.be.an("object");
+                        res.body.should.have.property("uniqueUrl").an("string").eql(doc.uniqueUrl);
+                        res.body.should.have.property("visitors").an("array").lengthOf(0);
+                        done();
+                    });
+            });
+        });
+    });
+
+
+    /**
+     * Test /GET Route 
+     */
+    describe("/GET valid url with valid existent shortid but Random visitors", function () {
+        // const randomNumber = Math.floor(Math.random() * Math.floor(10));
+        // var uniqueUrl = "";
+        // before(function () {
+        //     let url = new Url({
+        //         url: "http://google.com"
+        //     });
+        //     url.save(function (err, doc) {
+        //         this.retries(randomNumber);
+        //         uniqueUrl = doc.uniqueUrl;
+        //         chai.request(server)
+        //             .get(`/${uniqueUrl}`)
+        //             .end();
+        //     });
+        // }).skip();
+
+        // it("it should give all details of that url", (done) => {
+        //     console.log(uniqueUrl);
+        //     chai.request(server)
+        //         .get(`/${uniqueUrl}/stats`)
+        //         .end((err, res) => {
+        //             res.should.be.json;
+        //             res.should.have.status(200);
+        //             res.body.should.be.an("object");
+        //             res.body.should.have.property("uniqueUrl").an("string").eql(uniqueUrl);
+        //             res.body.should.have.property("visitors").an("array").lengthOf(randomNumber);
+        //             done();
+        //         });
+        // }).skip();
+    });
 });

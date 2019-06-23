@@ -51,7 +51,7 @@ const list = (req, res) => {
 };
 
 const get = (req, res) => {
-    if(shortid.isValid(req.params.url)){
+    if(req.params.url && shortid.isValid(req.params.url)){
         UrlModel.findOne({uniqueUrl: req.params.url}, async (err, doc) => {
             if(doc){
                 try {
@@ -88,13 +88,13 @@ const get = (req, res) => {
 }
 
 const getStats = (req, res) => {
-    if(shortid.isValid(req.params.url)){
+    if (req.params.url && shortid.isValid(req.params.url)) {
         UrlModel.findOne({uniqueUrl: req.params.url}, (err, doc) => {
             if(err){
                 console.error("err", err);
                 res.status(500).json(err);
             }
-            res.status(200).json(doc);
+            return doc ? res.status(200).json(doc) : res.status(404).json({"message": "Invalid URL"});
         });
     } else {
         res.status(404).json({
