@@ -9,11 +9,20 @@ const short = async (req, res) => {
             url: req.body.url
         });
         const shortUrl = await urlObject.save();
-        res.status(200).json({"shortUrl": `${req.hostname}:${req.port}/${shortUrl.uniqueUrl}`});
+        res.status(200).json({ ...shortUrl._doc, "uniqueUrl": `${req.protocol}://${req.hostname}/${shortUrl._doc.uniqueUrl}`});
     } catch (err) {
-        console.log("err", err);
+        console.error("err", err);
         res.status(500).json({"message": err});
     }
+};
+
+const list = (req, res) => {
+    UrlModel.find({isActive: true}, 'url uniqueUrl dateAdded', (err, docs) => {
+        if(err){
+            res.status(500).json(err);
+        }
+        res.status(200).json(docs.map(doc => ({...doc._doc, uniqueUrl: `${req.protocol}://${req.hostname}/${doc._doc.uniqueUrl}`})));
+    });
 };
 
 const get = (req, res) => {
@@ -65,5 +74,6 @@ const getStats = (req, res) => {
 module.exports ={ 
     short,
     get,
-    getStats
+    getStats,
+    list
 };
