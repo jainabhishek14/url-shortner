@@ -13,7 +13,7 @@ const rowFields = {
     },
     dateAdded: {
         name: "Created Date",
-        formattor: v => v.toString()
+        formattor: v => new Date(v).toLocaleString()
     },
     numClicks: {
         name: "Clicks",
