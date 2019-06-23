@@ -17,12 +17,27 @@ const short = async (req, res) => {
 };
 
 const list = (req, res) => {
-    UrlModel.find({isActive: true}, 'url uniqueUrl dateAdded', (err, docs) => {
+    UrlModel.aggregate([
+        {
+            $match:  {isActive: true}
+        },
+        {
+            $project: {
+                url: 1,
+                uniqueUrl: 1,
+                dateAdded: 1,
+                numClicks: {
+                    $size: "$visitors"
+                }
+            }
+        }
+    ])
+    .exec((err, docs) => {
         if(err){
             console.error("err", err);
             res.status(500).json(err);
         }
-        res.status(200).json(docs.map(doc => ({...doc._doc, uniqueUrl: `${req.protocol}://${req.hostname}/${doc._doc.uniqueUrl}`})));
+        res.status(200).json(docs.map(doc => ({...doc, uniqueUrl: `${req.protocol}://${req.hostname}/${doc.uniqueUrl}`})));
     });
 };
 
