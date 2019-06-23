@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 app.use(express.static(`${__dirname}/../../`));
 require("./app/routes")(app);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log("We are live on " + port);
 });
+module.exports = server;
