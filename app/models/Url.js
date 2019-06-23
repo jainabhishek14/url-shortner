@@ -11,6 +11,16 @@ const VisitorSchema = new Schema({
     dateOfVisit: {
         type: Date,
         default: Date.now
+    },
+    geo: {
+        range: [Number],
+        country: String,
+        region: String,
+        timezone: String,
+        city: String,
+        ll: [Number],
+        metro: Number,
+        area: Number
     }
 });
 

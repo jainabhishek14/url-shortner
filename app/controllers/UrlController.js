@@ -1,13 +1,7 @@
 const mongoose = require("mongoose");
 const shortid = require("shortid");
+const geoIp = require("geoip-lite");
 const UrlModel = require("../models/Url");
-
-
-const saveVisitorInfo = (id, params) => {
-    
-    
-    
-}
 
 const short = async (req, res) => {
     try {
@@ -28,7 +22,8 @@ const get = (req, res) => {
             const visitor = {
                 referrer: req.get("Referrer"),
                 ip: req.ip,
-                userAgent: req.get("User-Agent")
+                userAgent: req.get("User-Agent"),
+                geo: geoIp.lookup(req.ip)
             };
             try {
                 await UrlModel.updateOne({
@@ -40,9 +35,7 @@ const get = (req, res) => {
                 });
                 res.redirect(302, doc.url);
             } catch (err) {
-                res.status(500).json({
-                    "message": err
-                });
+                res.status(500).json(err);
             }
         });
     } else {
@@ -54,10 +47,19 @@ const get = (req, res) => {
 }
 
 const getStats = (req, res) => {
-    console.log(req);
-    res.status(200).json({
-        "message": "Successful"
-    });
+    if(shortid.isValid(req.params.url)){
+        UrlModel.findOne({uniqueUrl: req.params.url}, (err, doc) => {
+            if(err){
+                res.status(500).json(err);
+            }
+            res.status(200).json(doc);
+        });
+    } else {
+        res.status(404).json({
+            "message": "Invalid URL"
+        });
+    }
+    return res;
 }
 
 module.exports ={ 
