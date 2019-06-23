@@ -4,6 +4,16 @@ const Schema = mongoose.Schema;
 
 const setExpireTime = time => time || new Date();
 
+const VisitorSchema = new Schema({
+    referrer: String,
+    ip: String,
+    userAgent: String,
+    dateOfVisit: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const UrlSchema = new Schema({
     url: {
         type: String,
@@ -14,7 +24,8 @@ const UrlSchema = new Schema({
         validate: {
             validator: v => shortid.isValid(v),
             message: props => `${props.value} is not a valid url`
-        }
+        },
+        unique: true
     },
     isActive: {
         type: Boolean,
@@ -25,9 +36,13 @@ const UrlSchema = new Schema({
         default: setExpireTime()
     },
     user: {
-        isGuest: Boolean,
+        isGuest: {
+            type: Boolean,
+            default: true
+        },
         userName: String
-    }
+    },
+    visitors: [VisitorSchema]
 }, {
     timestamps: {
         createdAt: "dateAdded",
