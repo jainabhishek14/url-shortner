@@ -37,7 +37,11 @@ const list = (req, res) => {
             console.error("err", err);
             res.status(500).json(err);
         }
-        res.status(200).json(docs.map(doc => ({...doc, uniqueUrl: `${req.protocol}://${req.hostname}/${doc.uniqueUrl}`})));
+        res.status(200).json(docs.map(doc => ({
+            ...doc, 
+            uniqueUrl: `${req.protocol}://${req.hostname}/${doc.uniqueUrl}`, 
+            stats: `${req.protocol}://${req.hostname}/${doc.uniqueUrl}/stats`
+        })));
     });
 };
 

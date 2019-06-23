@@ -17,8 +17,12 @@ const rowFields = {
     },
     numClicks: {
         name: "Clicks",
-        formattor: v => typeof v === "Number" ? Number.parseInt(v, 10) : 0
+        formattor: v => Number.parseInt(v, 10)
     },
+    stats: {
+        name: "",
+        formattor: v => <a href={`${v}`} target="_blank">{`Get Stats`}</a>
+    }
 }
 
 const RowHeader = () => (<thead>
@@ -44,7 +48,7 @@ class ShortUrlTable extends Component{
                 <table>
                     <RowHeader />
                     <tbody>
-                        {this.props.urls.sort((a,b) => b.dateAdded - a.dateAdded).map(renderRow)}
+                        {this.props.urls.sort((a,b) => b.numClicks - a.numClicks).map(renderRow)}
                     </tbody>
                 </table>
             </div>
