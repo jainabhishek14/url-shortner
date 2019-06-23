@@ -12,6 +12,9 @@ const databaseConnectionString = "mongodb://localhost:27017/url-shortner";
 mongoose.Promise = global.Promise;
 mongoose.connect(databaseConnectionString, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(err => console.error.bind(console, "MongoDB connection error:"));
 
+app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.json());
+
 require("./app/routes")(app);
 
 app.listen(port, () => {
