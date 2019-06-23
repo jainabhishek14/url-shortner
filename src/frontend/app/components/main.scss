@@ -1,0 +1,50 @@
+.main {
+    background: #6b0f1a;
+    width: 50%;
+    margin: 10% 25%;
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+.main-form {
+    width: 100%;
+}
+
+.form-control, .form-input, .btn {
+    width: -moz-available;
+    padding: 0.5rem;
+}
+
+.form-control {
+    margin: 0.5rem 0;
+}
+
+.form-input {
+    border-radius: 20px;
+    font-size: 1.5rem;
+    border: 1px solid #ffffff;
+}
+
+.form-input:hover {
+    border-color: #dce0d9;
+}
+
+.form-input:focus {
+    border-color: green;
+}
+
+.btn {
+    background: darkgreen;
+    border: 1px solid darkgreen;
+    border-radius: 20px;
+    color: #dce0d9;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.btn:hover {
+    border-color: green;
+    background-color: green;
+}
+
+
