@@ -4,16 +4,19 @@ const geoIp = require("geoip-lite");
 const UrlModel = require("../models/Url");
 
 const short = async (req, res) => {
-    try {
-        const urlObject = new UrlModel({
-            url: req.body.url
-        });
-        const shortUrl = await urlObject.save();
-        res.status(200).json({ ...shortUrl._doc, "uniqueUrl": `${req.protocol}://${req.hostname}/${shortUrl._doc.uniqueUrl}`});
-    } catch (err) {
-        console.error("err", err);
-        res.status(500).json({"message": err});
+    if(req.body.url){
+        try {
+            const urlObject = new UrlModel({
+                url: req.body.url
+            });
+            const shortUrl = await urlObject.save();
+            return res.status(200).json({ ...shortUrl._doc, "uniqueUrl": `${req.protocol}://${req.hostname}/${shortUrl._doc.uniqueUrl}`});
+        } catch (err) {
+            console.error("err", err);
+            return res.status(500).json({"message": err});
+        }
     }
+    return res.status(400).json({"message": "Invalid Url"});
 };
 
 const list = (req, res) => {

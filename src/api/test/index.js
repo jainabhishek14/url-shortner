@@ -85,5 +85,49 @@ describe("Common", () => {
 				});
 		});
 	});
+});
 
+//Our parent block
+describe("Url", () => {
+    beforeEach((done) => { //Before each test we empty the database
+        Url.deleteMany({}, (err) => {
+            done();
+        });
+    });
+
+    /**
+     * Test /GET url Route 
+     */
+    describe("/GET ", () => {
+        it("it should GET all the items", (done) => {
+            chai.request(server)
+                .get("/list")
+                .end((err, res) => {
+                    res.should.be.json;
+                    res.should.have.status(200);
+                    res.body.should.be.an("array").lengthOf(0);
+                    done();
+                });
+        });
+    });
+
+
+    /**
+     * Test /POST short route
+     */
+    describe("/POST short", () => {
+        it("it should not shorten then url without url field", (done) => {
+            const req = {};
+            chai.request(server)
+                .post("/short")
+                .send(req)
+                .end((err, res) => {
+                    res.should.be.json;
+                    res.should.have.status(400);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("message").a("string").eql("Invalid Url");
+                    done();
+                });
+        });
+    });
 });
