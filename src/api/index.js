@@ -7,7 +7,7 @@ const app = express();
 const Url = require("./app/models/Url");
 
 const port = process.env.PORT || 6666;
-const databaseConnectionString = process.env.DB_CONNECTION || "mongodb://localhost:27017/url-shortner";
+const databaseConnectionString = process.env.MONGODB_URI || "mongodb://localhost:27017/url-shortner";
 // mongoose instance connection url connections
 mongoose.Promise = global.Promise;
 mongoose.connect(databaseConnectionString, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(err => console.error.bind(console, "MongoDB connection error:"));
