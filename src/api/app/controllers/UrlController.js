@@ -3,8 +3,10 @@ const shortid = require("shortid");
 const geoIp = require("geoip-lite");
 const UrlModel = require("../models/Url");
 
+const validateUrl = url => url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
+
 const short = async (req, res) => {
-    if(req.body.url){
+    if(req.body.url && validateUrl(req.body.url)){
         try {
             const urlObject = new UrlModel({
                 url: req.body.url
@@ -51,24 +53,30 @@ const list = (req, res) => {
 const get = (req, res) => {
     if(shortid.isValid(req.params.url)){
         UrlModel.findOne({uniqueUrl: req.params.url}, async (err, doc) => {
-            const visitor = {
-                referrer: req.get("Referrer"),
-                ip: req.ip,
-                userAgent: req.get("User-Agent"),
-                geo: geoIp.lookup(req.ip)
-            };
-            try {
-                await UrlModel.updateOne({
-                    _id: doc._id
-                }, {
-                    "$push": {
-                        visitors: visitor
-                    }
+            if(doc){
+                try {
+                    const visitor = {
+                        referrer: req.get("Referrer"),
+                        ip: req.ip,
+                        userAgent: req.get("User-Agent"),
+                        geo: geoIp.lookup(req.ip)
+                    };
+                    await UrlModel.updateOne({
+                        _id: doc._id
+                    }, {
+                        "$push": {
+                            visitors: visitor
+                        }
+                    });
+                    res.redirect(302, doc.url);
+                } catch (err) {
+                    console.error("err", err);
+                    res.status(500).json(err);
+                }
+            } else {
+                res.status(404).json({
+                    "message": "Invalid URL"
                 });
-                res.redirect(302, doc.url);
-            } catch (err) {
-                console.error("err", err);
-                res.status(500).json(err);
             }
         });
     } else {
